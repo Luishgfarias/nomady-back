@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  profilePhoto String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  posts Post[]
+
+  followers Follow[] @relation("following") // Quem me segue
+  following Follow[] @relation("follower") // Quem eu sigo
+
+  likes Like[]
+
+  @@map("user")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+
+  likes Like[]
+
+  @@map("post")
+}
+
+model Follow {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  follower   User   @relation("follower", fields: [followerId], references: [id])
+  followerId String
+
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@unique([followerId, followingId]) // Impede que o mesmo usuário siga outro usuário mais de uma vez
+  @@map("follow")
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+
+  @@unique([userId, postId]) // Impede que o mesmo usuário curta o mesmo post mais de uma vez
+  @@map("likes")
+}
