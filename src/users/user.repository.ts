@@ -1,16 +1,24 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserRepositoryDto } from './dto/create-user-repository.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from 'generated/prisma';
+import { searchUserDto } from './dto/search-user.dto';
 
 @Injectable()
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
-
+  private notFoundException = new NotFoundException('User not found');
   async createUser(data: CreateUserRepositoryDto) {
     try {
-      return await this.prisma.user.create({ data });
+      return await this.prisma.user.create({
+        data,
+        omit: { passwordHash: true, createdAt: true, updatedAt: true },
+      });
     } catch (error) {
       console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -42,16 +50,57 @@ export class UserRepository {
 
   async findUserById(id: string) {
     try {
-      return await this.prisma.user.findUnique({ where: { id } });
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        omit: { passwordHash: true, createdAt: true, updatedAt: true },
+      });
+      if (!user) {
+        throw this.notFoundException;
+      }
+      return user;
     } catch (error) {
       console.log(error);
       throw error;
     }
   }
 
-  async findAllUsers() {
+  async searchUsers(searchUser: searchUserDto, skip: number) {
     try {
-      return await this.prisma.user.findMany();
+      const [users, total] = await this.prisma.$transaction([
+        this.prisma.user.findMany({
+          where: {
+            name: {
+              contains: searchUser.name,
+              mode: 'insensitive',
+            },
+          },
+          skip: skip,
+          take: 10,
+          select: {
+            id: true,
+            name: true,
+            profilePhoto: true,
+            // adicione só os campos que quiser retornar
+          },
+        }),
+
+        this.prisma.user.count({
+          where: {
+            name: {
+              contains: searchUser.name,
+              mode: 'insensitive',
+            },
+          },
+        }),
+      ]);
+
+      if (!users || users.length === 0) {
+        throw this.notFoundException;
+      }
+      return {
+        users,
+        total,
+      };
     } catch (error) {
       console.log(error);
       throw error;

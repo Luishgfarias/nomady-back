@@ -2,7 +2,7 @@ import { compare, genSalt, hash } from 'bcrypt';
 import { HashingService } from './hashing.service';
 import { ServiceUnavailableException } from '@nestjs/common';
 
-export class BcryptService extends HashingService {
+export class BcryptService implements HashingService {
   async hashPassword(password: string): Promise<string> {
     try {
       const salt = await genSalt(12);
