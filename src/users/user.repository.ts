@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserRepositoryDto } from './dto/create-user-repository.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserRepositoryDto } from './dto/update-user-repository.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from 'generated/prisma';
 import { searchUserDto } from './dto/search-user.dto';
@@ -20,7 +20,6 @@ export class UserRepository {
         omit: { passwordHash: true, createdAt: true, updatedAt: true },
       });
     } catch (error) {
-      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ConflictException('Email already exists');
@@ -30,11 +29,14 @@ export class UserRepository {
     }
   }
 
-  async updateUser(id: string, data: UpdateUserDto) {
+  async updateUser(id: string, data: Partial<UpdateUserRepositoryDto>) {
     try {
-      return await this.prisma.user.update({ where: { id }, data });
+      return await this.prisma.user.update({
+        where: { id },
+        data,
+        omit: { passwordHash: true, createdAt: true, updatedAt: true },
+      });
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -43,7 +45,6 @@ export class UserRepository {
     try {
       return await this.prisma.user.delete({ where: { id } });
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -59,7 +60,6 @@ export class UserRepository {
       }
       return user;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -102,7 +102,6 @@ export class UserRepository {
         total,
       };
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

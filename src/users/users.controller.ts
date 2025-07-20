@@ -3,14 +3,15 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserControllerDto } from './dto/create-user-controller.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserControllerDto } from './dto/update-user-controller.dto';
 import { searchUserDto } from './dto/search-user.dto';
 import { uuidDto } from 'src/common/dtos/uuid.dto';
 
@@ -33,8 +34,21 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param() { id }: uuidDto, @Body() updateUserDto: UpdateUserDto) {
+  @Put(':id')
+  update(
+    @Param() { id }: uuidDto,
+    @Body() updateUserDto: UpdateUserControllerDto,
+  ) {
+    if (
+      !updateUserDto ||
+      Object.keys(updateUserDto).every(
+        (key) => updateUserDto[key] === undefined,
+      )
+    ) {
+      throw new BadRequestException(
+        'You must provide at least one field to update.',
+      );
+    }
     return this.usersService.update(id, updateUserDto);
   }
 
