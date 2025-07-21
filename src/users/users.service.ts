@@ -15,7 +15,8 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserControllerDto) {
     let userDataCreate: CreateUserRepositoryDto = {
-      ...createUserDto,
+      name: createUserDto.name,
+      email: createUserDto.email,
       passwordHash: await this.hashingService.hashPassword(
         createUserDto.password,
       ),
@@ -31,6 +32,10 @@ export class UsersService {
 
   async findOne(id: string) {
     return await this.userRepository.findUserById(id);
+  }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findUserByEmail(email);
   }
 
   async update(id: string, updateUserDto: UpdateUserControllerDto) {

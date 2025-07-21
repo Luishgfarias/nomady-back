@@ -8,35 +8,33 @@ import {
   Delete,
   Query,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserControllerDto } from './dto/create-user-controller.dto';
 import { UpdateUserControllerDto } from './dto/update-user-controller.dto';
 import { searchUserDto } from './dto/search-user.dto';
-import { uuidDto } from 'src/common/dtos/uuid.dto';
+import { AuthenticateGuard } from 'src/common/guards/authenticate.guard';
+import { UserToken } from 'src/common/params/user-token.param';
+import { UserTokenDto } from 'src/auth/dto/user-token.dto';
 
 @Controller('users')
+@UseGuards(AuthenticateGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserControllerDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get()
   search(@Query() searchUser: searchUserDto) {
     return this.usersService.searchUsers(searchUser);
   }
 
-  @Get(':id')
-  findOne(@Param() { id }: uuidDto) {
-    return this.usersService.findOne(id);
+  @Get('profile')
+  findOne(@UserToken() user: UserTokenDto) {
+    return this.usersService.findOne(user.sub);
   }
 
-  @Put(':id')
+  @Put()
   update(
-    @Param() { id }: uuidDto,
+    @UserToken() user: UserTokenDto,
     @Body() updateUserDto: UpdateUserControllerDto,
   ) {
     if (
@@ -49,11 +47,11 @@ export class UsersController {
         'You must provide at least one field to update.',
       );
     }
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(user.sub, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param() { id }: uuidDto) {
-    return this.usersService.remove(id);
+  @Delete()
+  remove(@UserToken() user: UserTokenDto) {
+    return this.usersService.remove(user.sub);
   }
 }

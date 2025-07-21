@@ -64,6 +64,20 @@ export class UserRepository {
     }
   }
 
+  async findUserByEmail(email: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+      if (!user) {
+        throw this.notFoundException;
+      }
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async searchUsers(searchUser: searchUserDto, skip: number) {
     try {
       const [users, total] = await this.prisma.$transaction([
