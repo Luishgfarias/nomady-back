@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserControllerDto } from './dto/create-user-controller.dto';
 import { UpdateUserControllerDto } from './dto/update-user-controller.dto';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './users.repository';
 import { HashingService } from 'src/auth/hashing/hashing.service';
 import { searchUserDto } from './dto/search-user.dto';
 import { CreateUserRepositoryDto } from './dto/create-user-repository.dto';

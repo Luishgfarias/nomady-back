@@ -1,0 +1,79 @@
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePostRepositoryDto } from './dto/create-post-repository.dto';
+import { UpdatePostRepositoryDto } from './dto/update-post-repository.dto';
+
+@Injectable()
+export class PostsRepository {
+  constructor(private prisma: PrismaService) {}
+  private notFoundException = new NotFoundException('Post not found');
+
+  createPost(data: CreatePostRepositoryDto) {
+    try {
+      return this.prisma.post.create({
+        data,
+      });
+    } catch (error) {
+      console.error('Error creating post:', error);
+      throw error;
+    }
+  }
+
+  updatePost(id: string, data: Partial<UpdatePostRepositoryDto>) {
+    try {
+      return this.prisma.post.update({
+        where: { id },
+        data,
+      });
+    } catch (error) {
+      console.error('Error updating post:', error);
+      throw error;
+    }
+  }
+
+  archivePost(id: string, published: boolean) {
+    try {
+      return this.prisma.post.update({
+        where: { id },
+        data: { published },
+      });
+    } catch (error) {
+      console.error('Error archiving post:', error);
+      throw error;
+    }
+  }
+
+  deletePost(id: string) {
+    try {
+      return this.prisma.post.delete({
+        where: { id },
+      });
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw error;
+    }
+  }
+
+  async findPostById(id: string) {
+    try {
+      const post = await this.prisma.post.findUnique({
+        where: { id },
+      });
+      if (!post) {
+        throw this.notFoundException;
+      }
+    } catch (error) {
+      console.error('Error finding post by ID:', error);
+      throw error;
+    }
+  }
+
+  findAllPosts() {
+    try {
+      return this.prisma.post.findMany();
+    } catch (error) {
+      console.error('Error finding posts:', error);
+      throw error;
+    }
+  }
+}
