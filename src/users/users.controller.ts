@@ -16,6 +16,7 @@ import { searchUserDto } from './dto/search-user.dto';
 import { AuthenticateGuard } from 'src/common/guards/authenticate.guard';
 import { UserToken } from 'src/common/params/user-token.param';
 import { UserTokenDto } from 'src/auth/dto/user-token.dto';
+import { uuidDto } from 'src/common/dtos/uuid.dto';
 
 @Controller('users')
 @UseGuards(AuthenticateGuard)
@@ -27,9 +28,9 @@ export class UsersController {
     return this.usersService.searchUsers(searchUser);
   }
 
-  @Get('profile')
-  findOne(@UserToken() user: UserTokenDto) {
-    return this.usersService.findOne(user.sub);
+  @Get(':id')
+  findOne(@Param() { id }: uuidDto) {
+    return this.usersService.findOne(id);
   }
 
   @Put()

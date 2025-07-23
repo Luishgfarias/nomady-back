@@ -17,11 +17,30 @@ import { UserToken } from 'src/common/params/user-token.param';
 import { UserTokenDto } from 'src/auth/dto/user-token.dto';
 import { uuidDto } from 'src/common/dtos/uuid.dto';
 import { PublishedPostDto } from './dto/published-post.dto';
+import { LikesService } from 'src/likes/likes.service';
 
 @Controller('posts')
 @UseGuards(AuthenticateGuard)
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly likesService: LikesService,
+  ) {}
+
+  @Post(':id/like')
+  likePost(@Param() { id }: uuidDto, @UserToken() user: UserTokenDto) {
+    return this.likesService.like({ postId: id, userId: user.sub });
+  }
+
+  @Delete(':id/unlike')
+  unlikePost(@Param() { id }: uuidDto, @UserToken() user: UserTokenDto) {
+    return this.likesService.unlike({ postId: id, userId: user.sub });
+  }
+
+  @Get('likes')
+  findLikedPosts(@UserToken() user: UserTokenDto) {
+    return this.likesService.findLikedPostsByUserId(user.sub);
+  }
 
   @Post()
   create(

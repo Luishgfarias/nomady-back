@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostRepositoryDto } from './dto/create-post-repository.dto';
 import { UpdatePostRepositoryDto } from './dto/update-post-repository.dto';
@@ -58,6 +62,11 @@ export class PostsRepository {
     try {
       const post = await this.prisma.post.findUnique({
         where: { id },
+        include: {
+          _count: {
+            select: { likes: true },
+          },
+        },
       });
       if (!post) {
         throw this.notFoundException;
@@ -68,9 +77,16 @@ export class PostsRepository {
     }
   }
 
+  //TO DO implement pagination and filtering
   findAllPosts() {
     try {
-      return this.prisma.post.findMany();
+      return this.prisma.post.findMany({
+        include: {
+          _count: {
+            select: { likes: true },
+          },
+        },
+      });
     } catch (error) {
       console.error('Error finding posts:', error);
       throw error;

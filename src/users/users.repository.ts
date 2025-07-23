@@ -54,6 +54,11 @@ export class UserRepository {
       const user = await this.prisma.user.findUnique({
         where: { id },
         omit: { passwordHash: true, createdAt: true, updatedAt: true },
+        include: {
+          _count: {
+            select: { followers: true, following: true },
+          },
+        },
       });
       if (!user) {
         throw this.notFoundException;
