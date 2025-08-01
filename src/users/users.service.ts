@@ -25,7 +25,8 @@ export class UsersService {
   }
 
   async searchUsers(searchUser: searchUserDto) {
-    const skip = (searchUser.page - 1) * 10;
+    const page = searchUser.page || 1;
+    const skip = (page - 1) * 10;
     const result = await this.userRepository.searchUsers(searchUser, skip);
     return { users: result.users, totalPages: Math.ceil(result.total / 10) };
   }

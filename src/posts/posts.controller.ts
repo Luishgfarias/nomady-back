@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostControllerDto } from './dto/create-post-controller.dto';
@@ -18,6 +19,7 @@ import { UserTokenDto } from 'src/auth/dto/user-token.dto';
 import { uuidDto } from 'src/common/dtos/uuid.dto';
 import { PublishedPostDto } from './dto/published-post.dto';
 import { LikesService } from 'src/likes/likes.service';
+import { paginationDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('posts')
 @UseGuards(AuthenticateGuard)
@@ -40,6 +42,17 @@ export class PostsController {
   @Get('likes')
   findLikedPosts(@UserToken() user: UserTokenDto) {
     return this.likesService.findLikedPostsByUserId(user.sub);
+  }
+
+  @Get('following')
+  findPostsFromFollowing(
+    @UserToken() user: UserTokenDto,
+    @Query() { page }: paginationDto,
+  ) {
+    return this.postsService.findPostsFromFollowing({
+      userId: user.sub,
+      page: page || 1,
+    });
   }
 
   @Post()

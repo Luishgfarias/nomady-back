@@ -34,15 +34,14 @@ Backend do Nomady, um blog estilo diário de viagem com pegada social e dinâmic
 - `POST /auth/register` — registrar usuário  
 - `POST /auth/login` — login (access + refresh token)  
 - `POST /auth/refresh` — renovar token  
-- `POST /auth/logout` — logout  
 - `GET /auth/me` — dados do usuário  
 
 ### Usuários (`/users`)
 
-- `GET /users` — listar  
+- `GET /users` — buscar usuários  
 - `GET /users/:id` — detalhes  
-- `PUT /users/:id` — atualizar  
-- `DELETE /users/:id` — deletar  
+- `PUT /users` — atualizar perfil  
+- `DELETE /users` — deletar conta  
 
 ### Posts (`/posts`)
 
@@ -51,19 +50,17 @@ Backend do Nomady, um blog estilo diário de viagem com pegada social e dinâmic
 - `GET /posts/:id` — detalhes  
 - `PUT /posts/:id` — atualizar  
 - `DELETE /posts/:id` — deletar  
+- `GET /posts/following` — posts dos usuários seguidos  
+- `POST /posts/:id/like` — curtir  
+- `DELETE /posts/:id/unlike` — descurtir  
+- `GET /posts/likes` — posts curtidos  
 
-### Seguidores (`/follows`)
+### Seguidores (`/follow`)
 
-- `POST /follows/:userId` — seguir  
-- `DELETE /follows/:userId` — deixar de seguir  
-- `GET /follows/followers/:id` — seguidores  
-- `GET /follows/following/:id` — seguindo  
-
-### Likes (`/posts/:postId/like`)
-
-- `POST /posts/:postId/like` — curtir  
-- `DELETE /posts/:postId/unlike` — descurtir  
-- `GET /posts/:postId/likes` — listar curtidas  
+- `POST /follow/:id` — seguir  
+- `DELETE /unfollow/:id` — deixar de seguir  
+- `GET /followers` — meus seguidores  
+- `GET /following` — quem eu sigo  
 
 ### Comentários (futuro)
 
@@ -94,7 +91,8 @@ src/
 ├── auth/
 ├── users/
 ├── posts/
-├── follows/
+├── follow/
+├── likes/
 ├── comments/ * Futuramente
 ├── chat/ * Futuramente
 ├── common/

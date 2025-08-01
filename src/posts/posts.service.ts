@@ -3,6 +3,7 @@ import { CreatePostRepositoryDto } from './dto/create-post-repository.dto';
 import { UpdatePostRepositoryDto } from './dto/update-post-repository.dto';
 import { PublishedPostDto } from './dto/published-post.dto';
 import { PostsRepository } from './posts.repository';
+import { FindPostsFollowingsDto } from './dto/find-posts-followings.dto';
 
 @Injectable()
 export class PostsService {
@@ -36,5 +37,20 @@ export class PostsService {
     if (result) {
       return { message: `Post with ID ${id} deleted successfully` };
     }
+  }
+
+  async findPostsFromFollowing(findPostsFollowingsDto: FindPostsFollowingsDto) {
+    const skip = (findPostsFollowingsDto.page - 1) * 10;
+    const { posts, total } = await this.postsRepository.findPostsFromFollowing(
+      findPostsFollowingsDto.userId,
+      skip,
+    );
+    const totalPages = Math.ceil(total / 10);
+
+    return {
+      posts,
+      total,
+      totalPages,
+    };
   }
 }
