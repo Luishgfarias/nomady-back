@@ -10,6 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { PostsService } from './posts.service';
 import { CreatePostControllerDto } from './dto/create-post-controller.dto';
 import { UpdatePostControllerDto } from './dto/update-post-controller.dto';
@@ -21,6 +22,8 @@ import { PublishedPostDto } from './dto/published-post.dto';
 import { LikesService } from 'src/likes/likes.service';
 import { paginationDto } from 'src/common/dtos/pagination.dto';
 
+@ApiTags('Posts')
+@ApiBearerAuth('JWT-auth')
 @Controller('posts')
 @UseGuards(AuthenticateGuard)
 export class PostsController {
@@ -30,21 +33,37 @@ export class PostsController {
   ) {}
 
   @Post(':id/like')
+  @ApiOperation({ summary: 'Curtir um post' })
+  @ApiParam({ name: 'id', description: 'ID do post' })
+  @ApiResponse({ status: 201, description: 'Post curtido com sucesso' })
+  @ApiResponse({ status: 400, description: 'Post já curtido' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
   likePost(@Param() { id }: uuidDto, @UserToken() user: UserTokenDto) {
     return this.likesService.like({ postId: id, userId: user.sub });
   }
 
   @Delete(':id/unlike')
+  @ApiOperation({ summary: 'Descurtir um post' })
+  @ApiParam({ name: 'id', description: 'ID do post' })
+  @ApiResponse({ status: 200, description: 'Post descurtido com sucesso' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
   unlikePost(@Param() { id }: uuidDto, @UserToken() user: UserTokenDto) {
     return this.likesService.unlike({ postId: id, userId: user.sub });
   }
 
   @Get('likes')
+  @ApiOperation({ summary: 'Listar posts curtidos pelo usuário' })
+  @ApiResponse({ status: 200, description: 'Lista de posts curtidos' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
   findLikedPosts(@UserToken() user: UserTokenDto) {
     return this.likesService.findLikedPostsByUserId(user.sub);
   }
 
   @Get('following')
+  @ApiOperation({ summary: 'Listar posts dos usuários seguidos' })
+  @ApiQuery({ name: 'page', required: false, description: 'Número da página', type: Number })
+  @ApiResponse({ status: 200, description: 'Lista de posts dos usuários seguidos' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
   findPostsFromFollowing(
     @UserToken() user: UserTokenDto,
     @Query() { page }: paginationDto,
@@ -56,6 +75,10 @@ export class PostsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Criar novo post' })
+  @ApiResponse({ status: 201, description: 'Post criado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
   create(
     @UserToken() user: UserTokenDto,
     @Body() createPostDto: CreatePostControllerDto,
@@ -64,16 +87,28 @@ export class PostsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Listar todos os posts' })
+  @ApiResponse({ status: 200, description: 'Lista de posts' })
   findAll() {
     return this.postsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Obter post específico' })
+  @ApiParam({ name: 'id', description: 'ID do post' })
+  @ApiResponse({ status: 200, description: 'Dados do post' })
+  @ApiResponse({ status: 404, description: 'Post não encontrado' })
   findOne(@Param() { id }: uuidDto) {
     return this.postsService.findOne(id);
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Atualizar post' })
+  @ApiParam({ name: 'id', description: 'ID do post' })
+  @ApiResponse({ status: 200, description: 'Post atualizado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  @ApiResponse({ status: 404, description: 'Post não encontrado' })
   update(
     @Param() { id }: uuidDto,
     @Body() updatePostDto: UpdatePostControllerDto,
@@ -82,6 +117,11 @@ export class PostsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Arquivar/desarquivar post' })
+  @ApiParam({ name: 'id', description: 'ID do post' })
+  @ApiResponse({ status: 200, description: 'Status do post alterado' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  @ApiResponse({ status: 404, description: 'Post não encontrado' })
   archive(
     @Param() { id }: uuidDto,
     @Body() publishedPostDto: PublishedPostDto,
@@ -90,6 +130,11 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Deletar post' })
+  @ApiParam({ name: 'id', description: 'ID do post' })
+  @ApiResponse({ status: 200, description: 'Post deletado com sucesso' })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  @ApiResponse({ status: 404, description: 'Post não encontrado' })
   remove(@Param() { id }: uuidDto) {
     return this.postsService.remove(id);
   }

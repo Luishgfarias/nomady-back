@@ -100,7 +100,7 @@ src/
 
 ## 📖 Documentação da API (Swagger)
 
-A API do **Nomady** estará documentada via **Swagger**, facilitando testes e entendimento das rotas.
+A API do **Nomady** está documentada via **Swagger**, facilitando testes e entendimento das rotas.
 
 ### Acessando a documentação
 
@@ -108,5 +108,12 @@ Após rodar o projeto localmente, acesse:
 
 http://localhost:3000/api-docs
 
+### Funcionalidades da documentação
+
+- ✅ **Interface interativa**: Teste as rotas diretamente no navegador
+- ✅ **Autenticação JWT**: Configure o Bearer token para testar rotas protegidas
+- ✅ **Schemas automáticos**: Todos os DTOs documentados com exemplos
+- ✅ **Respostas detalhadas**: Códigos de status e descrições para cada endpoint
+- ✅ **Parâmetros documentados**: Query params, path params e body params explicados
 
 > Nomady — Sua jornada, seu diário, seu mundo.
