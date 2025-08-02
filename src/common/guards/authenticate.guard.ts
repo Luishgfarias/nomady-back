@@ -1,12 +1,13 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError, JsonWebTokenError } from '@nestjs/jwt';
 import { Request } from 'express';
 import jwtConfigs from 'src/auth/configs/jwt.configs';
 import { REQUEST_USER } from '../constants/request-constants';
@@ -47,6 +48,10 @@ export class AuthenticateGuard implements CanActivate {
       request[REQUEST_USER] = user;
       return true;
     } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token expired');
+      }
+
       throw new UnauthorizedException('Invalid token');
     }
   }

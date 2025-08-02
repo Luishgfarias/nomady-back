@@ -36,12 +36,9 @@ export class AuthService {
     if (!user || !isPasswordValid) {
       throw new UnauthorizedException();
     }
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.name };
     const [accessToken, refreshToken] = await Promise.all([
-      this.generateToken(user.id, this.jwtConfigurations.expiresIn, {
-        email: user.email,
-        name: user.name,
-      }),
+      this.generateToken(user.id, this.jwtConfigurations.expiresIn, payload),
       this.generateToken(user.id, this.jwtConfigurations.refreshExpiresIn),
     ]);
     return {
