@@ -6,7 +6,7 @@
 
 | Tipo | Progresso | Status |
 |------|-----------|--------|
-| **Unitários Completos** | 1/9 arquivos | 🔴 Baixa |
+| **Unitários Completos** | 2/9 arquivos | 🟡 Parcial |
 | **E2E** | 1/4 arquivos | 🔴 Baixa |
 
 ---
@@ -15,6 +15,7 @@
 
 ### 🎯 Testes Unitários Completos
 - `src/auth/auth.service.spec.ts` ✅
+- `src/auth/auth.controller.spec.ts` ✅
 
 ### 🧪 Testes E2E
 - `test/app.e2e-spec.ts` ✅ (health check básico)
@@ -36,7 +37,6 @@
 - [ ] **Users Flow**: `GET /users/search` → `GET /users/:id` → `PUT /users`
 
 #### Testes Unitários dos Controllers
-- [ ] `auth.controller.spec.ts` - register, login, refresh, me
 - [ ] `posts.controller.spec.ts` - CRUD + likes
 - [ ] `users.controller.spec.ts` - search + CRUD
 

@@ -48,7 +48,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Obter dados do usuário logado' })
   @ApiResponse({ status: 200, description: 'Dados do usuário' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  findOne(@UserToken() user: UserTokenDto) {
+  me(@UserToken() user: UserTokenDto) {
     return this.usersService.findOne(user.sub);
   }
 
