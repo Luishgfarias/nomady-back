@@ -1,0 +1,68 @@
+# 🧪 ROADMAP DE TESTES - NOMADY BACK
+
+---
+
+## 📊 STATUS ATUAL
+
+| Tipo | Progresso | Status |
+|------|-----------|--------|
+| **Unitários Completos** | 1/9 arquivos | 🔴 Baixa |
+| **E2E** | 1/4 arquivos | 🔴 Baixa |
+
+---
+
+## ✅ O QUE JÁ EXISTE
+
+### 🎯 Testes Unitários Completos
+- `src/auth/auth.service.spec.ts` ✅
+
+### 🧪 Testes E2E
+- `test/app.e2e-spec.ts` ✅ (health check básico)
+
+### 📋 Testes E2E Recomendados (não implementados)
+- `test/auth.e2e-spec.ts` - Auth Flow
+- `test/posts.e2e-spec.ts` - Posts Flow
+- `test/users.e2e-spec.ts` - Users Flow
+
+---
+
+## 🚀 O QUE IMPLEMENTAR
+
+### 🎯 PRIORIDADE ALTA
+
+#### Testes E2E Essenciais
+- [ ] **Auth Flow**: `POST /auth/register` → `POST /auth/login` → `GET /auth/me`
+- [ ] **Posts Flow**: `POST /posts` → `GET /posts` → `POST /posts/:id/like`
+- [ ] **Users Flow**: `GET /users/search` → `GET /users/:id` → `PUT /users`
+
+#### Testes Unitários dos Controllers
+- [ ] `auth.controller.spec.ts` - register, login, refresh, me
+- [ ] `posts.controller.spec.ts` - CRUD + likes
+- [ ] `users.controller.spec.ts` - search + CRUD
+
+#### Testes Unitários dos Services
+- [ ] `users.service.spec.ts` - create, findByEmail, update, remove
+- [ ] `posts.service.spec.ts` - create, update, remove, findPostsFromFollowing
+- [ ] `likes.service.spec.ts` - likePost, unlikePost, getLikesByPost
+
+### 🎯 PRIORIDADE MÉDIA
+
+#### Testes de Guards/Interceptors
+- [ ] `authenticate.guard.spec.ts`
+- [ ] `error-handling.interceptor.spec.ts`
+
+### 🎯 PRIORIDADE BAIXA
+
+#### Testes E2E de Edge Cases
+- [ ] Auth Edge Cases - dados inválidos, tokens expirados
+- [ ] Posts Edge Cases - recursos inexistentes, permissões
+- [ ] Users Edge Cases - dados inválidos, conflitos
+
+#### Testes de Upload de Imagens (S3 AWS)
+- [ ] Users - upload de foto de perfil
+- [ ] Posts - upload de imagem do post
+- [ ] Edge Cases - arquivo muito grande, tipo inválido, falha no upload
+
+
+
+

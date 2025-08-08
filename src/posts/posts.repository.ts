@@ -70,11 +70,18 @@ export class PostsRepository {
           _count: {
             select: { likes: true },
           },
+          author: {
+            select: {
+              name: true,
+              profilePhoto: true,
+            },
+          },
         },
       });
       if (!post) {
         throw this.notFoundException;
       }
+      return post;
     } catch (error) {
       console.error('Error finding post by ID:', error);
       throw error;
