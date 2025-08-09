@@ -5,10 +5,14 @@ import { PublishedPostDto } from './dto/published-post.dto';
 import { PostsRepository } from './posts.repository';
 import { FindPostsFollowingsDto } from './dto/find-posts-followings.dto';
 import { paginationDto } from 'src/common/dtos/pagination.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly postsRepository: PostsRepository) {}
+  constructor(
+    private readonly postsRepository: PostsRepository,
+    private readonly usersService: UsersService,
+  ) {}
 
   create(createPostDto: CreatePostRepositoryDto) {
     return this.postsRepository.createPost(createPostDto);
@@ -48,6 +52,7 @@ export class PostsService {
   }
 
   async findPostsFromFollowing(findPostsFollowingsDto: FindPostsFollowingsDto) {
+    await this.usersService.findOne(findPostsFollowingsDto.userId);
     const skip = (findPostsFollowingsDto.page - 1) * 10;
     const { posts, total } = await this.postsRepository.findPostsFromFollowing(
       findPostsFollowingsDto.userId,

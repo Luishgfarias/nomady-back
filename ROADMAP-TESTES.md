@@ -6,7 +6,7 @@
 
 | Tipo | Progresso | Status |
 |------|-----------|--------|
-| **Unitários Completos** | 2/9 arquivos | 🟡 Parcial |
+| **Unitários Completos** | 4/9 arquivos | 🟡 Parcial |
 | **E2E** | 1/4 arquivos | 🔴 Baixa |
 
 ---
@@ -16,6 +16,8 @@
 ### 🎯 Testes Unitários Completos
 - `src/auth/auth.service.spec.ts` ✅
 - `src/auth/auth.controller.spec.ts` ✅
+- `src/posts/posts.service.spec.ts` ✅
+- `src/posts/posts.controller.spec.ts` ✅
 
 ### 🧪 Testes E2E
 - `test/app.e2e-spec.ts` ✅ (health check básico)
@@ -37,12 +39,10 @@
 - [ ] **Users Flow**: `GET /users/search` → `GET /users/:id` → `PUT /users`
 
 #### Testes Unitários dos Controllers
-- [ ] `posts.controller.spec.ts` - CRUD + likes
 - [ ] `users.controller.spec.ts` - search + CRUD
 
 #### Testes Unitários dos Services
 - [ ] `users.service.spec.ts` - create, findByEmail, update, remove
-- [ ] `posts.service.spec.ts` - create, update, remove, findPostsFromFollowing
 - [ ] `likes.service.spec.ts` - likePost, unlikePost, getLikesByPost
 
 ### 🎯 PRIORIDADE MÉDIA
@@ -62,7 +62,4 @@
 - [ ] Users - upload de foto de perfil
 - [ ] Posts - upload de imagem do post
 - [ ] Edge Cases - arquivo muito grande, tipo inválido, falha no upload
-
-
-
 

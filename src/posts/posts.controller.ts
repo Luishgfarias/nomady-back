@@ -28,6 +28,9 @@ import { uuidDto } from 'src/common/dtos/uuid.dto';
 import { PublishedPostDto } from './dto/published-post.dto';
 import { LikesService } from 'src/likes/likes.service';
 import { paginationDto } from 'src/common/dtos/pagination.dto';
+import { PaginatedPostsResponseDto, PostResponseDto } from './dto/paginated-posts-response.dto';
+import { PaginatedLikedPostsResponseDto } from 'src/likes/dto/paginated-liked-posts-response.dto';
+import { DeletePostResponseDto } from './dto/delete-post-response.dto';
 
 @ApiTags('Posts')
 @ApiBearerAuth('JWT-auth')
@@ -60,7 +63,18 @@ export class PostsController {
 
   @Get('likes')
   @ApiOperation({ summary: 'Listar posts curtidos pelo usuário' })
-  @ApiResponse({ status: 200, description: 'Lista de posts curtidos' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página (padrão: 1)',
+    type: Number,
+    example: 1,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista paginada de posts curtidos',
+    type: PaginatedLikedPostsResponseDto,
+  })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   findLikedPosts(
     @UserToken() user: UserTokenDto,
@@ -77,12 +91,14 @@ export class PostsController {
   @ApiQuery({
     name: 'page',
     required: false,
-    description: 'Número da página',
+    description: 'Número da página (padrão: 1)',
     type: Number,
+    example: 1,
   })
   @ApiResponse({
     status: 200,
-    description: 'Lista de posts dos usuários seguidos',
+    description: 'Lista paginada de posts dos usuários seguidos',
+    type: PaginatedPostsResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   findPostsFromFollowing(
@@ -97,7 +113,11 @@ export class PostsController {
 
   @Post()
   @ApiOperation({ summary: 'Criar novo post' })
-  @ApiResponse({ status: 201, description: 'Post criado com sucesso' })
+  @ApiResponse({
+    status: 201,
+    description: 'Post criado com sucesso',
+    type: PostResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   create(
@@ -109,7 +129,18 @@ export class PostsController {
 
   @Get()
   @ApiOperation({ summary: 'Listar todos os posts' })
-  @ApiResponse({ status: 200, description: 'Lista de posts' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página (padrão: 1)',
+    type: Number,
+    example: 1,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista paginada de posts',
+    type: PaginatedPostsResponseDto,
+  })
   findAll(@Query() { page }: paginationDto) {
     return this.postsService.findAll({ page: page || 1 });
   }
@@ -117,7 +148,11 @@ export class PostsController {
   @Get(':id')
   @ApiOperation({ summary: 'Obter post específico' })
   @ApiParam({ name: 'id', description: 'ID do post' })
-  @ApiResponse({ status: 200, description: 'Dados do post' })
+  @ApiResponse({
+    status: 200,
+    description: 'Dados do post',
+    type: PostResponseDto,
+  })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
   findOne(@Param() { id }: uuidDto) {
     return this.postsService.findOne(id);
@@ -126,7 +161,11 @@ export class PostsController {
   @Put(':id')
   @ApiOperation({ summary: 'Atualizar post' })
   @ApiParam({ name: 'id', description: 'ID do post' })
-  @ApiResponse({ status: 200, description: 'Post atualizado com sucesso' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post atualizado com sucesso',
+    type: PostResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
@@ -140,7 +179,11 @@ export class PostsController {
   @Patch(':id')
   @ApiOperation({ summary: 'Arquivar/desarquivar post' })
   @ApiParam({ name: 'id', description: 'ID do post' })
-  @ApiResponse({ status: 200, description: 'Status do post alterado' })
+  @ApiResponse({
+    status: 200,
+    description: 'Status do post alterado',
+    type: PostResponseDto,
+  })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
   archive(
@@ -153,7 +196,11 @@ export class PostsController {
   @Delete(':id')
   @ApiOperation({ summary: 'Deletar post' })
   @ApiParam({ name: 'id', description: 'ID do post' })
-  @ApiResponse({ status: 200, description: 'Post deletado com sucesso' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post deletado com sucesso',
+    type: DeletePostResponseDto,
+  })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
   remove(@Param() { id }: uuidDto) {
