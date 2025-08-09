@@ -30,48 +30,78 @@ export class FollowRepository {
     }
   }
 
-  async findFollowersByUserId(userId: string) {
+  async findFollowersByUserId(userId: string, skip: number) {
     try {
-      const data = await this.prisma.follow.findMany({
-        where: {
-          followingId: userId,
-        },
-        select: {
-          follower: {
-            select: {
-              id: true,
-              name: true,
-              profilePhoto: true,
+      const [follows, total] = await this.prisma.$transaction([
+        this.prisma.follow.findMany({
+          where: {
+            followingId: userId,
+          },
+          select: {
+            follower: {
+              select: {
+                id: true,
+                name: true,
+                profilePhoto: true,
+              },
             },
           },
-        },
-      });
+          skip,
+          take: 10,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        this.prisma.follow.count({
+          where: {
+            followingId: userId,
+          },
+        }),
+      ]);
 
-      return data.map((follow) => follow.follower);
+      return {
+        users: follows.map((follow) => follow.follower),
+        total,
+      };
     } catch (error) {
       console.error('Error finding followers by user ID:', error);
       throw error;
     }
   }
 
-  async findFollowingByUserId(userId: string) {
+  async findFollowingByUserId(userId: string, skip: number) {
     try {
-      const data = await this.prisma.follow.findMany({
-        where: {
-          followerId: userId,
-        },
-        select: {
-          following: {
-            select: {
-              id: true,
-              name: true,
-              profilePhoto: true,
+      const [follows, total] = await this.prisma.$transaction([
+        this.prisma.follow.findMany({
+          where: {
+            followerId: userId,
+          },
+          select: {
+            following: {
+              select: {
+                id: true,
+                name: true,
+                profilePhoto: true,
+              },
             },
           },
-        },
-      });
+          skip,
+          take: 10,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        this.prisma.follow.count({
+          where: {
+            followerId: userId,
+          },
+        }),
+      ]);
 
-      return data.map((follow) => follow.following);
+      return {
+        users: follows.map((follow) => follow.following),
+        total,
+      };
     } catch (error) {
       console.error('Error finding following by user ID:', error);
       throw error;

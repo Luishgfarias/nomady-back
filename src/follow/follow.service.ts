@@ -1,6 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FollowRepository } from './follow.repository';
 import { FollowUserDto } from './dto/follow-user.dto';
+import { FindFollowUsersDto } from './dto/find-follow-users.dto';
 
 @Injectable()
 export class FollowService {
@@ -13,7 +18,8 @@ export class FollowService {
       throw new BadRequestException('You cannot follow yourself');
     }
 
-    const follow = await this.followRepository.findFollowByUserId(followUserDto);
+    const follow =
+      await this.followRepository.findFollowByUserId(followUserDto);
 
     if (follow) {
       throw new BadRequestException('You are already following this user');
@@ -23,7 +29,8 @@ export class FollowService {
   }
 
   async unfollowUser(followUserDto: FollowUserDto) {
-    const follow = await this.followRepository.findFollowByUserId(followUserDto);
+    const follow =
+      await this.followRepository.findFollowByUserId(followUserDto);
 
     if (!follow) {
       throw new NotFoundException('You are not following this user');
@@ -32,11 +39,31 @@ export class FollowService {
     return this.followRepository.unfollowUser(followUserDto);
   }
 
-  findFollowersByUserId(userId: string) {
-    return this.followRepository.findFollowersByUserId(userId);
+  async findFollowersByUserId({ userId, page }: FindFollowUsersDto) {
+    const skip = (page - 1) * 10;
+    const { users, total } = await this.followRepository.findFollowersByUserId(
+      userId,
+      skip,
+    );
+    const totalPages = Math.ceil(total / 10);
+    return {
+      users,
+      total,
+      totalPages,
+    };
   }
 
-  findFollowingByUserId(userId: string) {
-    return this.followRepository.findFollowingByUserId(userId);
+  async findFollowingByUserId({ userId, page }: FindFollowUsersDto) {
+    const skip = (page - 1) * 10;
+    const { users, total } = await this.followRepository.findFollowingByUserId(
+      userId,
+      skip,
+    );
+    const totalPages = Math.ceil(total / 10);
+    return {
+      users,
+      total,
+      totalPages,
+    };
   }
 }

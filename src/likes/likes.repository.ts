@@ -31,20 +31,51 @@ export class LikesRepository {
     }
   }
   
-  //TO DO implement pagination
-  async findLikedPostsByUserId(userId: string) {
+  async findLikedPostsByUserId(userId: string, skip: number) {
     try {
-      return await this.prisma.like.findMany({
-        where: {
-          userId,
-          post: {
-            published: true,
+      const [likes, total] = await this.prisma.$transaction([
+        this.prisma.like.findMany({
+          where: {
+            userId,
+            post: {
+              published: true,
+            },
           },
-        },
-        select: {
-          post: true,
-        },
-      });
+          select: {
+            post: {
+              include: {
+                _count: {
+                  select: { likes: true },
+                },
+                author: {
+                  select: {
+                    name: true,
+                    profilePhoto: true,
+                  },
+                },
+              },
+            },
+          },
+          skip,
+          take: 10,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        this.prisma.like.count({
+          where: {
+            userId,
+            post: {
+              published: true,
+            },
+          },
+        }),
+      ]);
+
+      return {
+        posts: likes.map(like => like.post),
+        total,
+      };
     } catch (error) {
       console.error('Error finding likes by user ID:', error);
       throw error;

@@ -99,7 +99,6 @@ export class UserRepository {
             id: true,
             name: true,
             profilePhoto: true,
-            // adicione só os campos que quiser retornar
           },
         }),
 

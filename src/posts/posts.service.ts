@@ -4,6 +4,7 @@ import { UpdatePostRepositoryDto } from './dto/update-post-repository.dto';
 import { PublishedPostDto } from './dto/published-post.dto';
 import { PostsRepository } from './posts.repository';
 import { FindPostsFollowingsDto } from './dto/find-posts-followings.dto';
+import { paginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class PostsService {
@@ -13,8 +14,15 @@ export class PostsService {
     return this.postsRepository.createPost(createPostDto);
   }
 
-  findAll() {
-    return this.postsRepository.findAllPosts();
+  async findAll({ page }: paginationDto) {
+    const skip = (page - 1) * 10;
+    const { posts, total } = await this.postsRepository.findAllPosts(skip);
+    const totalPages = Math.ceil(total / 10);
+    return {
+      posts,
+      total,
+      totalPages,
+    };
   }
 
   findOne(id: string) {

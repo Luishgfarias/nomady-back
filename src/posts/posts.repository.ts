@@ -88,25 +88,45 @@ export class PostsRepository {
     }
   }
 
-  //TO DO implement pagination and filtering
-  findAllPosts() {
+  async findAllPosts(skip: number) {
     try {
-      return this.prisma.post.findMany({
-        where: {
-          published: true,
-        },
-        include: {
-          _count: {
-            select: { likes: true },
+      const [posts, total] = await this.prisma.$transaction([
+        this.prisma.post.findMany({
+          where: {
+            published: true,
           },
-          author: {
-            select: {
-              name: true,
-              profilePhoto: true,
+          include: {
+            _count: {
+              select: { likes: true },
+            },
+            author: {
+              select: {
+                name: true,
+                profilePhoto: true,
+              },
             },
           },
-        },
-      });
+          skip,
+          take: 10,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        this.prisma.post.count({
+          where: {
+            published: true,
+          },
+        }),
+      ]);
+
+      if (!posts || posts.length === 0) {
+        throw this.notFoundException;
+      }
+
+      return {
+        posts,
+        total,
+      };
     } catch (error) {
       console.error('Error finding posts:', error);
       throw error;

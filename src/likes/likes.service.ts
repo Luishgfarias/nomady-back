@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { LikePostDto } from './dto/like-post.dto';
 import { LikesRepository } from './likes.repository';
 import { PostsService } from 'src/posts/posts.service';
+import { FindLikedPostsDto } from './dto/find-liked-posts.dto';
 
 @Injectable()
 export class LikesService {
@@ -28,7 +29,14 @@ export class LikesService {
     }
   }
 
-  async findLikedPostsByUserId(userId: string) {
-    return this.likesRepository.findLikedPostsByUserId(userId);
+  async findLikedPostsByUserId({ page, userId }: FindLikedPostsDto) {
+    const skip = (page - 1) * 10;
+    const { posts, total } = await this.likesRepository.findLikedPostsByUserId(userId, skip);
+    const totalPages = Math.ceil(total / 10);
+    return {
+      posts,
+      total,
+      totalPages,
+    };
   }
 }

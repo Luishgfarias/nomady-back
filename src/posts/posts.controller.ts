@@ -10,7 +10,14 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { PostsService } from './posts.service';
 import { CreatePostControllerDto } from './dto/create-post-controller.dto';
 import { UpdatePostControllerDto } from './dto/update-post-controller.dto';
@@ -55,14 +62,28 @@ export class PostsController {
   @ApiOperation({ summary: 'Listar posts curtidos pelo usuário' })
   @ApiResponse({ status: 200, description: 'Lista de posts curtidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  findLikedPosts(@UserToken() user: UserTokenDto) {
-    return this.likesService.findLikedPostsByUserId(user.sub);
+  findLikedPosts(
+    @UserToken() user: UserTokenDto,
+    @Query() { page }: paginationDto,
+  ) {
+    return this.likesService.findLikedPostsByUserId({
+      userId: user.sub,
+      page: page || 1,
+    });
   }
 
   @Get('following')
   @ApiOperation({ summary: 'Listar posts dos usuários seguidos' })
-  @ApiQuery({ name: 'page', required: false, description: 'Número da página', type: Number })
-  @ApiResponse({ status: 200, description: 'Lista de posts dos usuários seguidos' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página',
+    type: Number,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de posts dos usuários seguidos',
+  })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   findPostsFromFollowing(
     @UserToken() user: UserTokenDto,
@@ -89,8 +110,8 @@ export class PostsController {
   @Get()
   @ApiOperation({ summary: 'Listar todos os posts' })
   @ApiResponse({ status: 200, description: 'Lista de posts' })
-  findAll() {
-    return this.postsService.findAll();
+  findAll(@Query() { page }: paginationDto) {
+    return this.postsService.findAll({ page: page || 1 });
   }
 
   @Get(':id')
