@@ -6,7 +6,7 @@
 
 | Tipo | Progresso | Status |
 |------|-----------|--------|
-| **Unitários Completos** | 4/9 arquivos | 🟡 Parcial |
+| **Unitários Completos** | 7/9 arquivos | 🟡 Parcial |
 | **E2E** | 1/4 arquivos | 🔴 Baixa |
 
 ---
@@ -18,6 +18,9 @@
 - `src/auth/auth.controller.spec.ts` ✅
 - `src/posts/posts.service.spec.ts` ✅
 - `src/posts/posts.controller.spec.ts` ✅
+- `src/likes/likes.service.spec.ts` ✅
+- `src/users/users.service.spec.ts` ✅
+- `src/users/users.controller.spec.ts` ✅
 
 ### 🧪 Testes E2E
 - `test/app.e2e-spec.ts` ✅ (health check básico)
@@ -39,17 +42,18 @@
 - [ ] **Users Flow**: `GET /users/search` → `GET /users/:id` → `PUT /users`
 
 #### Testes Unitários dos Controllers
-- [ ] `users.controller.spec.ts` - search + CRUD
+- ✅ **Completos!** Todos os controllers principais testados
 
 #### Testes Unitários dos Services
-- [ ] `users.service.spec.ts` - create, findByEmail, update, remove
-- [ ] `likes.service.spec.ts` - likePost, unlikePost, getLikesByPost
+- ✅ **Completos!** Todos os services principais testados
 
-### 🎯 PRIORIDADE MÉDIA
+### 🎯 PRÓXIMO PASSO (AMANHÃ)
 
 #### Testes de Guards/Interceptors
-- [ ] `authenticate.guard.spec.ts`
-- [ ] `error-handling.interceptor.spec.ts`
+- [x] `authenticate.guard.spec.ts` - Estrutura criada (implementar os testes)
+- [x] `error-handling.interceptor.spec.ts` - Estrutura criada (implementar os testes)
+
+### 🎯 PRIORIDADE ALTA (DEPOIS DOS GUARDS)
 
 ### 🎯 PRIORIDADE BAIXA
 
