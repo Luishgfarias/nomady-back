@@ -5,15 +5,13 @@ import { LikesService } from 'src/likes/likes.service';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfigs from 'src/auth/configs/jwt.configs';
 import { UsersService } from 'src/users/users.service';
-import { CreatePostRepositoryDto } from './dto/create-post-repository.dto';
 import { CreatePostControllerDto } from './dto/create-post-controller.dto';
 import { UserTokenDto } from 'src/auth/dto/user-token.dto';
 import { paginationDto } from 'src/common/dtos/pagination.dto';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { UpdatePostRepositoryDto } from './dto/update-post-repository.dto';
 import { uuidDto } from 'src/common/dtos/uuid.dto';
 import { PublishedPostDto } from './dto/published-post.dto';
-import { FindPostsFollowingsDto } from './dto/find-posts-followings.dto';
 
 describe('PostsController', () => {
   let postController: PostsController;

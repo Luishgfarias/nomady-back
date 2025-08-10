@@ -27,8 +27,11 @@ export class UsersService {
   async searchUsers(searchUser: searchUserDto) {
     const page = searchUser.page || 1;
     const skip = (page - 1) * 10;
-    const result = await this.userRepository.searchUsers(searchUser, skip);
-    return { users: result.users, totalPages: Math.ceil(result.total / 10) };
+    const { users, total } = await this.userRepository.searchUsers(
+      searchUser,
+      skip,
+    );
+    return { users, total, totalPages: Math.ceil(total / 10) };
   }
 
   async findOne(id: string) {
@@ -42,14 +45,16 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserControllerDto) {
     await this.userRepository.findUserById(id);
     let userDataUpdate: Partial<UpdateUserRepositoryDto> = {
-      ...updateUserDto,
+      name: updateUserDto.name,
+      email: updateUserDto.email,
+      profilePhoto: updateUserDto.profilePhoto,
     };
     if (updateUserDto.password) {
-      console.log('aqui => ' + updateUserDto);
       userDataUpdate.passwordHash = await this.hashingService.hashPassword(
         updateUserDto.password,
       );
     }
+
     return await this.userRepository.updateUser(id, userDataUpdate);
   }
 

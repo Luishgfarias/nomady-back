@@ -31,7 +31,10 @@ export class LikesService {
 
   async findLikedPostsByUserId({ page, userId }: FindLikedPostsDto) {
     const skip = (page - 1) * 10;
-    const { posts, total } = await this.likesRepository.findLikedPostsByUserId(userId, skip);
+    const { posts, total } = await this.likesRepository.findLikedPostsByUserId(
+      userId,
+      skip,
+    );
     const totalPages = Math.ceil(total / 10);
     return {
       posts,
