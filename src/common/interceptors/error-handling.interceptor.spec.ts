@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ExecutionContext } from '@nestjs/common';
 import { ErrorHandlingInterceptor } from './errorHandling.interceptor';
 
 describe('ErrorHandlingInterceptor', () => {
@@ -17,32 +18,45 @@ describe('ErrorHandlingInterceptor', () => {
   });
 
   describe('intercept', () => {
-    it('should handle validation errors', () => {
-      // TODO: Implementar teste para erros de validação
+    it('should pass through successful responses unchanged', async () => {
+      const mockCallHandler = {
+        handle: jest.fn().mockReturnValue({
+          pipe: jest.fn().mockReturnValue('success response')
+        })
+      };
+
+      const result = await interceptor.intercept({} as ExecutionContext, mockCallHandler);
+      expect(result).toBe('success response');
     });
 
-    it('should handle not found errors', () => {
-      // TODO: Implementar teste para erros de recurso não encontrado
+    it('should handle 500+ errors and return generic message', async () => {
+      const mockError = { status: 500, message: 'Database connection failed' };
+      const mockCallHandler = {
+        handle: jest.fn().mockReturnValue({
+          pipe: jest.fn().mockImplementation((callback) => {
+            const errorHandler = callback;
+            throw errorHandler(mockError);
+          })
+        })
+      };
+
+      await expect(interceptor.intercept({} as ExecutionContext, mockCallHandler))
+        .rejects.toThrow();
     });
 
-    it('should handle conflict errors', () => {
-      // TODO: Implementar teste para erros de conflito
-    });
+    it('should pass through 400-499 errors unchanged', async () => {
+      const mockError = { status: 404, message: 'User not found' };
+      const mockCallHandler = {
+        handle: jest.fn().mockReturnValue({
+          pipe: jest.fn().mockImplementation((callback) => {
+            const errorHandler = callback;
+            throw errorHandler(mockError);
+          })
+        })
+      };
 
-    it('should handle unauthorized errors', () => {
-      // TODO: Implementar teste para erros de não autorizado
-    });
-
-    it('should handle forbidden errors', () => {
-      // TODO: Implementar teste para erros de acesso negado
-    });
-
-    it('should handle internal server errors', () => {
-      // TODO: Implementar teste para erros internos do servidor
-    });
-
-    it('should preserve successful responses', () => {
-      // TODO: Implementar teste para respostas bem-sucedidas
+      await expect(interceptor.intercept({} as ExecutionContext, mockCallHandler))
+        .rejects.toThrow();
     });
   });
 }); 

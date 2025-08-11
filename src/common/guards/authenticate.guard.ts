@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
@@ -52,7 +53,14 @@ export class AuthenticateGuard implements CanActivate {
         throw new UnauthorizedException('Token expired');
       }
 
-      throw new UnauthorizedException('Invalid token');
+      if (
+        error instanceof JsonWebTokenError ||
+        error instanceof NotFoundException
+      ) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      throw new UnauthorizedException('Authentication failed');
     }
   }
 
