@@ -6,7 +6,7 @@
 
 | Tipo | Progresso | Status |
 |------|-----------|--------|
-| **Unitários Completos** | 7/9 arquivos | 🟡 Parcial |
+| **Unitários Completos** | 9/11 arquivos | 🟡 Parcial |
 | **E2E** | 1/4 arquivos | 🔴 Baixa |
 
 ---
@@ -21,6 +21,12 @@
 - `src/likes/likes.service.spec.ts` ✅
 - `src/users/users.service.spec.ts` ✅
 - `src/users/users.controller.spec.ts` ✅
+- `src/common/guards/authenticate.guard.spec.ts` ✅
+- `src/common/interceptors/error-handling.interceptor.spec.ts` ✅
+
+### 🎯 Testes Unitários Incompletos (estrutura básica)
+- `src/follow/follow.service.spec.ts` 🔴 (só estrutura básica)
+- `src/follow/follow.controller.spec.ts` 🔴 (só estrutura básica)
 
 ### 🧪 Testes E2E
 - `test/app.e2e-spec.ts` ✅ (health check básico)
@@ -42,18 +48,16 @@
 - [ ] **Users Flow**: `GET /users/search` → `GET /users/:id` → `PUT /users`
 
 #### Testes Unitários dos Controllers
-- ✅ **Completos!** Todos os controllers principais testados
+- [ ] `follow.service.spec.ts` - Implementar testes completos
 
 #### Testes Unitários dos Services
-- ✅ **Completos!** Todos os services principais testados
+- [ ] `follow.controller.spec.ts` - Implementar testes completos
 
 ### 🎯 PRÓXIMO PASSO (AMANHÃ)
 
-#### Testes de Guards/Interceptors
-- [x] `authenticate.guard.spec.ts` - Estrutura criada (implementar os testes)
-- [x] `error-handling.interceptor.spec.ts` - Estrutura criada (implementar os testes)
+- [ ] `follow.service.spec.ts` - Implementar testes completos
+- [ ] `follow.controller.spec.ts` - Implementar testes completos
 
-### 🎯 PRIORIDADE ALTA (DEPOIS DOS GUARDS)
 
 ### 🎯 PRIORIDADE BAIXA
 
