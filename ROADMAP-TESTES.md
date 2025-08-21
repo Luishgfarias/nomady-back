@@ -6,7 +6,7 @@
 
 | Tipo | Progresso | Status |
 |------|-----------|--------|
-| **Unitários Completos** | 9/11 arquivos | 🟡 Parcial |
+| **Unitários Completos** | 11/11 arquivos | 🟢 Completo |
 | **E2E** | 1/4 arquivos | 🔴 Baixa |
 
 ---
@@ -23,10 +23,8 @@
 - `src/users/users.controller.spec.ts` ✅
 - `src/common/guards/authenticate.guard.spec.ts` ✅
 - `src/common/interceptors/error-handling.interceptor.spec.ts` ✅
-
-### 🎯 Testes Unitários Incompletos (estrutura básica)
-- `src/follow/follow.service.spec.ts` 🔴 (só estrutura básica)
-- `src/follow/follow.controller.spec.ts` 🔴 (só estrutura básica)
+- `src/follow/follow.controller.spec.ts` ✅
+- `src/follow/follow.service.spec.ts` ✅
 
 ### 🧪 Testes E2E
 - `test/app.e2e-spec.ts` ✅ (health check básico)
@@ -47,16 +45,10 @@
 - [ ] **Posts Flow**: `POST /posts` → `GET /posts` → `POST /posts/:id/like`
 - [ ] **Users Flow**: `GET /users/search` → `GET /users/:id` → `PUT /users`
 
-#### Testes Unitários dos Controllers
-- [ ] `follow.service.spec.ts` - Implementar testes completos
 
-#### Testes Unitários dos Services
-- [ ] `follow.controller.spec.ts` - Implementar testes completos
+### 🎯 PRÓXIMO PASSO
 
-### 🎯 PRÓXIMO PASSO (AMANHÃ)
-
-- [ ] `follow.service.spec.ts` - Implementar testes completos
-- [ ] `follow.controller.spec.ts` - Implementar testes completos
+- [ ] Implementar testes E2E essenciais
 
 
 ### 🎯 PRIORIDADE BAIXA

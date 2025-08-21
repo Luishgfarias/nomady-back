@@ -6,37 +6,55 @@ import {
 import { FollowRepository } from './follow.repository';
 import { FollowUserDto } from './dto/follow-user.dto';
 import { FindFollowUsersDto } from './dto/find-follow-users.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class FollowService {
-  constructor(private readonly followRepository: FollowRepository) {}
+  constructor(
+    private readonly followRepository: FollowRepository,
+    private readonly usersService: UsersService,
+  ) {}
 
   async followUser(followUserDto: FollowUserDto) {
-    const { followingId, followerId } = followUserDto;
+    try {
+      const { followingId, followerId } = followUserDto;
 
-    if (followingId === followerId) {
-      throw new BadRequestException('You cannot follow yourself');
+      await this.usersService.findOne(followingId);
+
+      if (followingId === followerId) {
+        throw new BadRequestException('You cannot follow yourself');
+      }
+
+      const follow =
+        await this.followRepository.findFollowByUserId(followUserDto);
+
+      if (follow) {
+        throw new BadRequestException('You are already following this user');
+      }
+
+      return this.followRepository.followUser(followUserDto);
+    } catch (error) {
+      throw error;
     }
-
-    const follow =
-      await this.followRepository.findFollowByUserId(followUserDto);
-
-    if (follow) {
-      throw new BadRequestException('You are already following this user');
-    }
-
-    return this.followRepository.followUser(followUserDto);
   }
 
   async unfollowUser(followUserDto: FollowUserDto) {
-    const follow =
-      await this.followRepository.findFollowByUserId(followUserDto);
+    try {
+      const follow =
+        await this.followRepository.findFollowByUserId(followUserDto);
 
-    if (!follow) {
-      throw new NotFoundException('You are not following this user');
+      if (!follow) {
+        throw new NotFoundException('You are not following this user');
+      }
+
+      await this.followRepository.unfollowUser(followUserDto);
+
+      return {
+        message: 'User unfollowed successfully',
+      };
+    } catch (error) {
+      throw error;
     }
-
-    return this.followRepository.unfollowUser(followUserDto);
   }
 
   async findFollowersByUserId({ userId, page }: FindFollowUsersDto) {
